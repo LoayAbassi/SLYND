@@ -30,7 +30,7 @@ SLYND is a blog application that allows users to:
 
 ## V. Database
 
-- **MySQL**: Used to store user data, blog posts, and interactions (comments, likes).
+- **sqlite**: Used to store user data, blog posts, and interactions (comments, likes).
 
 ## VI. Setup Instructions
 
