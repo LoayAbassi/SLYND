@@ -62,3 +62,13 @@ shoft f11 to step out
    // makes admin panel look better
 2. py manage.py migrate
 3. py manage.py createsuperuser
+
+# setting up user model
+
+django have a default user model , to avoid conflicts u need to make sure u change the settings.py in order to define ur user model structure
+"AUTH_USER_MODEL = 'api.User'"
+
+when changing a database structure, make sure to make migrations buddy (delete the database, migration folder in case of error )
+1. py .\manage.py makemigrations
+2. py .\manage.py migrate
+
