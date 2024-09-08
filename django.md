@@ -69,6 +69,42 @@ django have a default user model , to avoid conflicts u need to make sure u chan
 "AUTH_USER_MODEL = 'api.User'"
 
 when changing a database structure, make sure to make migrations buddy (delete the database, migration folder in case of error )
+
 1. py .\manage.py makemigrations
 2. py .\manage.py migrate
 
+# Events
+
+from django.db.models.signals import post_save
+post_save.connect(fnName,sender=ModelName)
+// to notify the app of events we use signals.
+
+# packages
+
+1.  slugify
+    creates URL-friendly text
+    from django.utils.text import slugify
+    slugify("Django is Awesome!") ==> django-is-awesome.
+
+2.  Models
+    imports default ORM structures and allows editing db
+    from django.db import models
+    super(ClassName,self).save(\*args,\*\*kwargs)  
+    // this will save the instance to the related parent in db
+
+    i. model elements example
+    title = models.CharField(max_length=int)
+    image = models.FileField(upload_to=path)
+    user = models.ForeignKey(mainClass, on_delete=models.method)
+
+    # listview
+
+          constant =((element1,Element1),....)
+          element1 will be stored in db
+          Element1 will be displayed in the listview
+
+         element= models.CharField(max_length=10, choices=constatnt)
+
+# metaclass // models.py 110
+
+      allows model configuration, overiding specs....

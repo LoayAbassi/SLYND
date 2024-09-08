@@ -19,3 +19,5 @@ py manage.py runserver // port 8000 defaulted(u can specify)
 jazzmin settings 185 - 270 settings.py
 
 to notify the app of events we use signals.
+like when a user is added we automatically create a profile for them
+
