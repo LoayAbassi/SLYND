@@ -78,6 +78,12 @@ class Category(models.Model):
 
         super(Category, self).save(*args, **kwargs)
 
+    class Meta:
+        verbose_name_plural = "Category"
+
+    def post_count(self):
+        return Post.objects.filter(category=self).count()
+
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -95,18 +101,73 @@ class Post(models.Model):
         ('Disabled', 'Disabled')
     )
     status = models.CharField(choices=STATUS, max_length=100, default="Active")
-    slug = models.SlugField(unique=True,null=True, blank=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
     view = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, blank=True, related_name="likes_user")
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
-    
-    def save(self,*args,**kwargs):
-        if self.slug =="" or self.slug is None:
-            self.slug = slugify(self.title)
+
+    def save(self, *args, **kwargs):
+        if self.slug == "" or self.slug is None:
+            self.slug = slugify(self.title)+" - "+shortuuid.uuid()[:2]
+
+        super(Post, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-date']
         verbose_name_plural = "Post"
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    Name = models.CharField(max_length=100)
+    comment = models.TextField(null=True, blank=True)
+    email = models.CharField(max_length=100)
+    reply = models.TextField(null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.post.title
+
+    class Meta:
+        ordering = ["-date"]
+        verbose_name_plural = "Comment"
+
+
+class Bookmark(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.post.title
+
+    class Meta:
+        ordering = ["-date"]
+        verbose_name_plural = "Bookmark"
+
+
+class Notification(models.Model):
+    NOTIF_TYPE = (
+        ('Like', 'Like'),
+        ('Comment', 'Comment'),
+        ('Bookmark', 'Bookmark')
+    )
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.CharField(choices=NOTIF_TYPE, max_length=100)
+    seen = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.post:
+            return "{} - {}".format(self.post.title, self.type)
+        else:
+            return "Notification"
+
+    class Meta:
+        ordering = ["-date"]
+        verbose_name_plural = "Notificqtion"

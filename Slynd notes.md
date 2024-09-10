@@ -21,3 +21,8 @@ jazzmin settings 185 - 270 settings.py
 to notify the app of events we use signals.
 like when a user is added we automatically create a profile for them
 
+# serialization
+
+JSON Web Token //JWT ==> used for auth
+
+depth is used in the meta class to define the levels of forign keys to acsses
