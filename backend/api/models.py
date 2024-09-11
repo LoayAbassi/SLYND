@@ -170,4 +170,4 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ["-date"]
-        verbose_name_plural = "Notificqtion"
+        verbose_name_plural = "Notification"

@@ -90,3 +90,52 @@ class PostDetailAPIView(generics.RetrieveAPIView):
         return post
 
 
+class LikesPostAPIView(APIView):
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'user_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            },
+        ),
+    )
+    def post(self, request):
+        user_id = request.data['user_id']
+        post_id = request.data['post_id']
+        user = api_models.User.objects.get(id=user_id)
+        post = api_models.Post.objects.get(id=post_id)
+
+        if user in post.likes.all():
+            post.likes.remove(user)
+            return Response({"message": "Post disliked"}, status=status.HTTP_200_OK)
+
+        else:
+            post.likes.add(user)
+            api_models.Notification.objects.create(
+                user=post.user,
+                post=post,
+                type="Like"
+            )
+            return Response({"message": "Post liked"}, status=status.HTTP_201_CREATED)
+
+
+class PostCommentAPIView(APIView):
+    def post(self, request):
+        post_id = request.data["post_id"]
+        name = request.data["name"]
+        email = request.data["email"]
+        comment = request.data["comment"]
+        post = api_models.Post.objects.get(id=post_id)
+        api_models.Comment.objects.create(
+            post=post,
+            name=name,
+            email=email,
+            comment=comment
+        )
+
+        api_models.Notification.objects.create(
+            user = post.user,
+            post = post,
+            type = "Comment"
+        )
