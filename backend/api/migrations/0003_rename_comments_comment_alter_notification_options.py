@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='notification',
-            options={'ordering': ['-date'], 'verbose_name_plural': 'Notificqtion'},
+            options={'ordering': ['-date'], 'verbose_name_plural': 'Notification'},
         ),
     ]

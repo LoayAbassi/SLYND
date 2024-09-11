@@ -15,7 +15,11 @@ urlpatterns = [
          api_views.PostCategoryListAPIView.as_view()),
     path("post/lists/", api_views.PostListAPIView.as_view()),
     path("post/detail/<slug>", api_views.PostDetailAPIView.as_view()),
+    # Reacting
     path("post/like-post/", api_views.LikesPostAPIView.as_view()),
-
+    path("post/comment-post/", api_views.PostCommentAPIView.as_view()),
+    path("post/bookmark-post/", api_views.BookmarkPostAPIView.as_view()),
+    #dashboard
+    path("author/dashboard/stats/<user_id>", api_views.DashboardStats.as_view()),
 
 ]

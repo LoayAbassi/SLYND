@@ -122,7 +122,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    Name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     comment = models.TextField(null=True, blank=True)
     email = models.CharField(max_length=100)
     reply = models.TextField(null=True, blank=True)

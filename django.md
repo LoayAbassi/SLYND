@@ -108,3 +108,20 @@ post_save.connect(fnName,sender=ModelName)
 # metaclass // models.py 110
 
       allows model configuration, overiding specs....
+
+# swagger for api fields
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'user_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            },
+        ),
+    )
+
+`this will provide input fields for apis with post requests`
+
+# acessing levels of objects 
+double underscore : post__user ==> means post.user 
