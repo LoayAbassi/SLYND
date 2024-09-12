@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Landing Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      line-height: 1.6;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    header nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+    }
+    header nav ul li {
+      margin: 0 15px;
+    }
+    header nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    .intro {
+      background: url('./bg.jpg') no-repeat center center/cover;
+      height: 100vh;
+      color: white;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .intro h1 {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+    .intro p {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+    .intro button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .features {
+      background-color: #f4f4f4;
+      padding: 40px 20px;
+    }
+    .features h2 {
+      margin-bottom: 40px;
+    }
+    .feature {
+      display: inline-block;
+      width: 30%;
+      margin: 0 10px;
+      text-align: center;
+    }
+    .feature img {
+      width: 100%;
+      height: 200px;
+    }
+    .feature h3 {
+      margin: 20px 0 10px 0;
+    }
+    .about {
+      background-color: #e0e0e0;
+      padding: 40px 20px;
+    }
+    .about h2 {
+      margin-bottom: 20px;
+    }
+    .about p {
+      margin-bottom: 20px;
+    }
+    .social-links a {
+      margin: 0 10px;
+      color: #333;
+      text-decoration: none;
+    }
+    footer {
+      background-color: #333;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    video {
+      width: 80%;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#intro">Intro</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="intro" id="intro">
+    <h1>SLYND Blog</h1>
+    <p>Discover the Best Blogs in the World</p>
+    <button onclick="window.location.href='#features'">Explore Features</button>
+  </div>
+
+  <section class="features" id="features">
+    <h2>Key Features</h2>
+    <div class="feature">
+      <img src="responsive.png" alt="Feature 1">
+      <h3>Responsive Design</h3>
+      <p>Our blog is mobile-friendly and works across all devices.</p>
+    </div>
+    <div class="feature">
+      <img src="easy.png" alt="Feature 2">
+      <h3>Easy to Use</h3>
+      <p>With a simple UI, you can navigate the blog effortlessly.</p>
+    </div>
+    <div class="feature">
+      <img src="seo.png" alt="Feature 3">
+      <h3>SEO Optimized</h3>
+      <p>Our blog is optimized for search engines, making it easy to find.</p>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <h2>About SLYND Blog</h2>
+    <p>The SLYND Blog was created as a way to connect bloggers and readers from around the world. Our journey started when we realized that people needed a platform where they can read about anything they love, all in one place.</p>
+    <p>This is a Portfolio Project for Holberton School. You can find more about our team below.</p>
+    <div class="social-links">
+      <a href="https://www.linkedin.com/in/loay-abassi/">LinkedIn</a>
+      <a href="https://github.com/LoayAbassi">GitHub</a>
+      <a href="https://x.com/abassiloay">Twitter</a>
+    </div>
+    <br>
+    <a href="https://github.com/project-repo" target="_blank">Project GitHub Repository</a>
+  </section>
+
+  
+
+  <footer>
+    <p>&copy; 2024 SLYND Blog. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
