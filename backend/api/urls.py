@@ -34,6 +34,8 @@ urlpatterns = [
          api_views.DashboardReplyCommentAPIView.as_view()),
     path("author/dashboard/create-post/",
          api_views.DashboardPostCreateAPIView.as_view()),
+     path("author/dashboard/post_detail/<user_id>/<post_id>/",
+         api_views.DashbaordPostEditAPIView.as_view()),
 
 
 
