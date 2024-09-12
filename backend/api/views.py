@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-from django.db.models import Sum,Count
+from django.db.models import Sum, Count
 # Restframework
 from rest_framework import status
 from rest_framework.decorators import api_view, APIView
@@ -197,21 +197,23 @@ class DashboardStats(generics.ListAPIView):
         user_id = self.kwargs['user_id']
         user = api_models.User.objects.get(id=user_id)
 
-        views= api_models.Post.objects.filter(user = user).aggregate(view = Sum("view"))["view"]
-        posts = api_models.Post.objects.filter(user = user).count()
-        likes = api_models.Post.objects.filter(user = user).aggregate(like = Count("likes"))["like"]
-        bookmarks = api_models.Bookmark.objects.filter(post__user = user).count()
+        views = api_models.Post.objects.filter(
+            user=user).aggregate(view=Sum("view"))["view"]
+        posts = api_models.Post.objects.filter(user=user).count()
+        likes = api_models.Post.objects.filter(
+            user=user).aggregate(like=Count("likes"))["like"]
+        bookmarks = api_models.Bookmark.objects.filter(post__user=user).count()
 
         return [{
-            "views":views,
-            "posts":posts,
-            "likes":likes,
-            "bookmarks":bookmarks,
+            "views": views,
+            "posts": posts,
+            "likes": likes,
+            "bookmarks": bookmarks,
         }]
-    
-    def list(self,*args,**kwargs):
+
+    def list(self, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset,many = True)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -221,8 +223,9 @@ class DashboardPostLists(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
-        user = api_models.User.objects.get(id = user_id)
-        api_models.Post.objects.filter(user = user).order_by("-id")
+        user = api_models.User.objects.get(id=user_id)
+        return api_models.Post.objects.filter(user=user).order_by("-id")
+
 
 class DashboardCommentList(generics.ListAPIView):
     serializer_class = api_serializer.CommentSerializer
@@ -230,19 +233,83 @@ class DashboardCommentList(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
-        user = api_models.User.objects.get(id = user_id)
-        return api_models.Comment.objects.filter(post__user = user)
+        user = api_models.User.objects.get(id=user_id)
+        return api_models.Comment.objects.filter(post__user=user)
+
 
 class DashboardNotificationList(generics.ListAPIView):
     serializer_class = api_serializer.NotificationSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        user_id =self.kwargs["user_id"]
-        user = api_models.User.objects.get(id = user_id)
+        user_id = self.kwargs["user_id"]
+        user = api_models.User.objects.get(id=user_id)
 
-        return api_models.Notification.objects.all(seen = False,user = user)
-    
+        return api_models.Notification.objects.filter(seen=False, user=user)
+
+
 class DashboardMarkNotificationsAsSeen(APIView):
-    def post(self,request):
-        notification_id = request.data["noti_id"]
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'notification_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            },
+        ),
+    )
+    def post(self, request):
+        notification_id = request.data["notification_id"]
+        notification = api_models.Notification.objects.get(id=notification_id)
+        notification.seen = True
+        notification.save()
+        return Response({"message": "Notification marked seen"}, status=status.HTTP_200_OK)
+
+
+class DashboardReplyCommentAPIView(APIView):
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'comment_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'reply': openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ),
+    )
+    def post(self, request):
+        comment_id = request.data["comment_id"]
+        reply = request.data["reply"]
+
+        comment = api_models.Comment.objects.get(id=comment_id)
+        comment.reply = reply
+        comment.save()
+        return Response({"message": "reply added"}, status=status.HTTP_201_CREATED)
+
+
+class DashboardPostCreateAPIView(generics.CreateAPIView):
+    serializer_class = api_serializer.PostSerializer
+    permission_classes = [AllowAny]
+
+    def create(self,request,*args,**kwargs):
+        print(request.data)
+        user_id = request.data.get("user_id")
+        title = request.data.get("title")
+        image = request.data.get("image")
+        description = request.data.get("description")
+        tags = request.data.get("tags")
+        category_id = request.data.get("category_id")
+        post_status = request.data.get("post_status")
+
+        user = api_models.User.objects.get(id = user_id)
+        category = api_models.Category.objects.get(id = category_id)
+
+        api_models.Post.create(
+            user = user,
+            title = title,
+            image = image,
+            description = description,
+            tags = tags,
+            category = category,
+            status = post_status,
+        )
+        return Response({"message":"post created"},status = status.HTTP_201_CREATED)
+    
