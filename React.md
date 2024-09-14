@@ -44,3 +44,11 @@ III. AJAX communication
     interceptors allows request,response modifiaction before they
     get handled by then and catch , 21
 
+IV. UseState
+
+    it's an array that takes 2 values (argument, function)
+    example :
+        import React,{useState} from "react";
+        const [count,setcount] = usestate(starting_value)
+        
+
