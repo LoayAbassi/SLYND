@@ -41,14 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #my apps
+    # my apps
     'api',
 
-    #3rd party app 
+    # 3rd party app
 
     'corsheaders',
     'rest_framework',
-    'rest_framework_simplejwt.token_blacklist', 
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
 ]
 
@@ -68,7 +68,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,"templates")],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -179,8 +179,11 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # Add your frontend URL here
+    'http://localhost:5173',
 ]
+
+
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # customizations
 
@@ -194,7 +197,8 @@ JAZZMIN_SETTINGS = {
     "copyright": "SLYND",
     "user_avatar": "images/photos/logo.jpg",
     "topmenu_links": [
-        {"name": "Dashboard", "url": "home", "permissions": ["auth.view_user"]},
+        {"name": "Dashboard", "url": "home",
+            "permissions": ["auth.view_user"]},
         {"model": "auth.User"},
     ],
     "show_sidebar": True,
@@ -214,22 +218,22 @@ JAZZMIN_SETTINGS = {
         "auth.user": "fas fa-user",
 
         "api.User": "fas fa-user",
-        "api.Profile":"fas fa-address-card",
-        "api.Post":"fas fa-th",
-        "api.Category":"fas fa-tag",
-        "api.Comment":"fas fa-envelope",
-        "api.Notification":"fas fa-bell",
-        "api.Bookmark":"fas fa-heart",
+        "api.Profile": "fas fa-address-card",
+        "api.Post": "fas fa-th",
+        "api.Category": "fas fa-tag",
+        "api.Comment": "fas fa-envelope",
+        "api.Notification": "fas fa-bell",
+        "api.Bookmark": "fas fa-heart",
 
-        
+
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-arrow-circle-right",
     "related_modal_active": False,
-    
+
     "custom_js": None,
     "show_ui_builder": True,
-    
+
     "changeform_format": "horizontal_tabs",
     "changeform_format_overrides": {
         "auth.user": "collapsible",
@@ -244,32 +248,31 @@ JAZZMIN_UI_TWEAKS = {
     "footer_small_text": False,
     "body_small_text": True,
     "brand_small_text": False,
-    "brand_colour": "navbar-indigo",
+    "brand_colour": False,
     "accent": "accent-olive",
-    "navbar": "navbar-indigo navbar-dark",
+    "navbar": "navbar-light",
     "no_navbar_border": False,
-    "navbar_fixed": False,
+    "navbar_fixed": True,
     "layout_boxed": False,
     "footer_fixed": False,
-    "sidebar_fixed": False,
-    "sidebar": "sidebar-dark-indigo",
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-navy",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": False,
     "sidebar_nav_compact_style": False,
-    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_legacy_style": True,
     "sidebar_nav_flat_style": False,
     "theme": "default",
     "dark_mode_theme": None,
     "button_classes": {
-        "primary": "btn-outline-primary",
-        "secondary": "btn-outline-secondary",
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
         "danger": "btn-danger",
         "success": "btn-success"
-    }
+    },
+    "actions_sticky_top": True
 }
-
 AUTH_USER_MODEL = "api.User"
-

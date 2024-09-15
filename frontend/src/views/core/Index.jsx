@@ -9,9 +9,9 @@ import Moment from "../../plugin/Moment"
 
 function Index() {
     const [posts,setPost] = useState([]);
-    const [category,setCategory] = useState([]);
+    const [categories,setCategory] = useState([]);
  
-    const fetchPost = async()=>{
+    const fetchPostCategory = async()=>{
         try{
             const post_res = await apiInstance.get('post/lists/');
             const  category_res = await apiInstance.get('post/category/list/');
@@ -24,8 +24,9 @@ function Index() {
         
     };
     useEffect(()=>{
-        fetchPost();
+        fetchPostCategory();
     },[]);
+    
 
     return (
         <div>
@@ -37,7 +38,7 @@ function Index() {
                             <a href="#" className="d-block card-img-flash">
                                 <img src="assets/images/adv-3.png" alt="" />
                             </a>
-                            <h2 className="text-start d-block mt-1">Trending Articles 🔥</h2>
+                            <h2 className="text-start d-block mt-1">Most Viewed Posts</h2>
                         </div>
                     </div>
                 </div>
@@ -46,7 +47,7 @@ function Index() {
             <section className="pt-4 pb-0">
                 <div className="container">
                     <div className="row">
-                        {posts?.map((post)=>(
+                        {posts?.sort((a, b) => b.view - a.view).map((post)=>(
                             <div className="col-sm-6 col-lg-3" key = {post?.id} >
                             <div className="card mb-4">
                                 <div className="card-fold position-relative">
@@ -114,93 +115,27 @@ function Index() {
 
             <section className="bg-light pt-5 pb-5 mb-3 mt-3">
                 <div className="container">
-                    <div className="row g-0">
-                        <div className="col-12 ">
-                            <div className="mb-4">
-                                <h2>Categories</h2>
-                            </div>
-                            <div className="d-flex flex-wrap justify-content-between">
-                                <div className="mt-2">
+                    <div className="container">
+                        <div className="row">
+                            {categories.map((category) => (
+                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={category.id}>
                                     <div className="card bg-transparent">
-                                        <img className="card-img" src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/father-son-1.jpg" style={{ width: "150px", height: "80px", objectFit: "cover" }} alt="card image" />
-                                        <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">Life Style</h5>
-                                            <small>3 Articles</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="mt-2">
-                                    <div className="card bg-transparent">
-                                        <img className="card-img" src="https://assets.entrepreneur.com/content/3x2/2000/1599591949-GettyImages-1174414266.jpg" style={{ width: "150px", height: "80px", objectFit: "cover" }} alt="card image" />
-                                        <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">Entertainment</h5>
-                                            <small>1 Articles</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-2">
-                                    <div className="card bg-transparent">
-                                        <img
-                                            className="card-img"
-                                            src="https://imageio.forbes.com/specials-images/imageserve/5d35eacaf1176b0008974b54/2020-Chevrolet-Corvette-Stingray/0x0.jpg?format=jpg&crop=4560,2565,x790,y784,safe&width=960"
-                                            style={{ width: "150px", height: "80px", objectFit: "cover" }}
-                                            alt="card image"
+                                        <img 
+                                            className="card-img" 
+                                            src={category.image} 
+                                            style={{ width: "100%", height: "160px", objectFit: "cover" }} 
+                                            alt="card image" 
                                         />
                                         <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">Cars</h5>
-                                            <small>2 Articles</small>
+                                            <h5 className="mb-0">{category.title}</h5>
+                                            <small>{category.post_count == 1 ? "1 Post" : `${category.post_count} Posts`}</small>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="mt-2">
-                                    <div className="card bg-transparent">
-                                        <img className="card-img" src="https://guardian.ng/wp-content/uploads/2019/03/sport-equipment-e1555707764770.jpeg" style={{ width: "150px", height: "80px", objectFit: "cover" }} alt="card image" />
-                                        <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">Sports</h5>
-                                            <small>8 Articles</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-2">
-                                    <div className="card bg-transparent">
-                                        <img className="card-img" src="https://aliviohealth.com/wp-content/uploads/2022/07/Managing-Mental-Health-During-COVID-19.jpg" style={{ width: "150px", height: "80px", objectFit: "cover" }} alt="card image" />
-                                        <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">Health</h5>
-                                            <small>7 Articles</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-2">
-                                    <div className="card bg-transparent">
-                                        <img
-                                            className="card-img"
-                                            src="https://www.realsimple.com/thmb/yla86Nr8GjRXe_9IyADQ638gPrg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/fashion-trends-GettyImages-1457816153-d2982e954afe4b42bf5587f087da90d4.jpg"
-                                            style={{ width: "150px", height: "80px", objectFit: "cover" }}
-                                            alt="card image"
-                                        />
-                                        <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">Fashion</h5>
-                                            <small>4 Articles</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-2">
-                                    <div className="card bg-transparent">
-                                        <img className="card-img" src="https://insight.ng/wp-content/uploads/2022/01/andrey-suslov-shutterstock-1199480788_w400-3.png" style={{ width: "150px", height: "80px", objectFit: "cover" }} alt="card image" />
-                                        <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">Tech</h5>
-                                            <small>13 Articles</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
+
                 </div>
             </section>
 
