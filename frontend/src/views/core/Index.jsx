@@ -50,7 +50,7 @@ function Index() {
                             <div className="col-sm-6 col-lg-3" key = {post?.id} >
                             <div className="card mb-4">
                                 <div className="card-fold position-relative">
-                                    <img className="card-img" style={{ width: "100%", height: "160px", objectFit: "cover" }} src={post.image} alt="Card image" />
+                                    <img className="card-img" style={{ width: "100%", height: "160px", objectFit: "cover" }} src={post.image} alt={post.title} />
                                 </div>
                                 <div className="card-body px-3 pt-3">
                                     <h4 className="card-title">
@@ -68,14 +68,14 @@ function Index() {
                                     <ul className="mt-3 list-style-none" style={{ listStyle: "none" }}>
                                         <li>
                                             <a href="#" className="text-dark text-decoration-none">
-                                                <i className="fas fa-user"></i> Louis Ferguson
+                                                <i className="fas fa-user"></i> {post.user.full_name}
                                             </a>
                                         </li>
                                         <li className="mt-2">
-                                            <i className="fas fa-calendar"></i> Mar 07, 2022
+                                            <i className="fas fa-calendar"></i> {Moment(post.date)}
                                         </li>
                                         <li className="mt-2">
-                                            <i className="fas fa-eye"></i> 10 Views
+                                            <i className="fas fa-eye"></i> {post.view}
                                         </li>
                                     </ul>
                                 </div>
