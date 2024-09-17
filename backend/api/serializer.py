@@ -86,6 +86,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         model = api_models.Post
+    
+    comments = CommentSerializer(many = True)
 
     def __init__(self, *args, **kwargs):
         super(PostSerializer, self).__init__(*args, **kwargs)

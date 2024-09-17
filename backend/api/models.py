@@ -92,6 +92,8 @@ class Post(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=100)
+    tags = models.CharField(max_length=100, null=True, blank=True)
+
     image = models.FileField(upload_to="posts")
     description = models.TextField(null=True, blank=True)
 
@@ -111,13 +113,16 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if self.slug == "" or self.slug is None:
-            self.slug = slugify(self.title)+" - "+shortuuid.uuid()[:2]
+            self.slug = slugify(self.title)+"-"+shortuuid.uuid()[:2]
 
         super(Post, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-date']
         verbose_name_plural = "Post"
+
+    def comments(self):
+        return Comment.objects.filter(post=self)
 
 
 class Comment(models.Model):
