@@ -8,6 +8,7 @@ import Toast from "../../plugin/Toast";
 import Moment from "../../plugin/Moment"
 import "./index.css"
 function Index() {
+    // fetching posts and categories
     const [posts,setPost] = useState([]);
     const [categories,setCategory] = useState([]);
  
@@ -23,7 +24,9 @@ function Index() {
         }
         
     };
+    // making sure the page renders only once
     useEffect(()=>{
+        
         fetchPostCategory();
     },[]);
     // post pagination set

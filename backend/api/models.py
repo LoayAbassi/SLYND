@@ -7,6 +7,9 @@ import shortuuid
 
 
 class User(AbstractUser):
+    """Custom User model extending Django's AbstractUser 
+    to modify fields like username and email."""
+
     username = models.CharField(unique=True, max_length=100)
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=100, null=True, blank=True)
@@ -18,6 +21,9 @@ class User(AbstractUser):
         return self.username
 
     def save(self, *args, **kwargs):
+        """Override the save method to populate full_name and
+        username based on the email."""
+
         email_username, mobile = self.email.split("@")
         if self.full_name == '' or self.full_name is None:
             self.full_name = email_username
@@ -28,6 +34,9 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
+    """Profile model to store additional user information,
+    related to the User model."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.FileField(
         upload_to="profiles", default="default/default.png", null=True, blank=True)
@@ -44,6 +53,9 @@ class Profile(models.Model):
         return self.user.username
 
     def save(self, *args, **kwargs):
+        """Override save method to populate
+        full_name from the associated user if it's empty."""
+
         if self.full_name == '' or self.full_name is None:
             self.full_name = self.user.full_name
 
@@ -51,11 +63,16 @@ class Profile(models.Model):
 
 
 def create_user_profile(sender, instance, created, **kwargs):
+    """Signal to create a profile automatically 
+    when a new user is created."""
+
     if created:
         Profile.objects.create(user=instance)
 
 
 def save_user_profile(sender, instance, **kwargs):
+    """Signal to save the profile automatically
+    whenever the user is saved."""
     instance.profile.save()
 
 
@@ -64,6 +81,7 @@ post_save.connect(save_user_profile, sender=User)
 
 
 class Category(models.Model):
+    """Category model to organize posts into categories."""
     title = models.CharField(max_length=100)
     image = models.FileField(upload_to="categories", null=True, blank=True)
     slug = models.SlugField(unique=True, null=True, blank=True)
@@ -72,6 +90,7 @@ class Category(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        """Override save method to generate slug from title if not provided."""
 
         if self.slug == "" or self.slug is None:
             self.slug = slugify(self.title)
@@ -86,6 +105,8 @@ class Category(models.Model):
 
 
 class Post(models.Model):
+    """Post model for creating and managing user posts."""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, null=True, blank=True)
@@ -112,6 +133,8 @@ class Post(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        """Override save method to generate slug from title and add a short UUID."""
+
         if self.slug == "" or self.slug is None:
             self.slug = slugify(self.title)+"-"+shortuuid.uuid()[:2]
 
@@ -126,6 +149,8 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    """Comment model for storing user comments on posts."""
+
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     comment = models.TextField(null=True, blank=True)
@@ -142,6 +167,7 @@ class Comment(models.Model):
 
 
 class Bookmark(models.Model):
+    """Bookmark model for saving favorite posts by users."""
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -155,6 +181,9 @@ class Bookmark(models.Model):
 
 
 class Notification(models.Model):
+    """Notification model to manage user notifications for
+    likes, comments, and bookmarks."""
+
     NOTIF_TYPE = (
         ('Like', 'Like'),
         ('Comment', 'Comment'),

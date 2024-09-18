@@ -29,20 +29,27 @@ import random
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
+    """Custom Token View to include additional user information in the token"""
     serializer_class = api_serializer.MyTokenObtainPairSerializer
 
 
 class RegisterView(generics.CreateAPIView):
+    """API view to register a new user"""
+
     queryset = api_models.User.objects.all()
     permission_classes = [AllowAny]
     serializer_class = api_serializer.RegisterSerializer
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
+    """API view to retrieve or update user profile"""
+
     permission_classes = [AllowAny]
     serializer_class = api_serializer.ProfileSerializer
 
     def get_object(self):
+        """Retrieve profile based on user ID"""
+
         user_id = self.kwargs['user_id']
         user = api_models.User.objects.get(id=user_id)
         Profile = api_models.Profile.objects.get(user=user)
@@ -50,18 +57,26 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
 
 class CategoryListAPIView(generics.ListAPIView):
+    """API view to list all categories"""
+
     serializer_class = api_serializer.CategorySerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        """Return all categories"""
+
         return api_models.Category.objects.all()
 
 
 class PostCategoryListAPIView(generics.ListAPIView):
+    """API view to list posts by category slug"""
+
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        """Return posts filtered by category slug"""
+
         category_slug = self.kwargs["category_slug"]
         category = api_models.Category.objects.get(slug=category_slug)
         posts = api_models.Post.objects.filter(
@@ -70,27 +85,36 @@ class PostCategoryListAPIView(generics.ListAPIView):
 
 
 class PostListAPIView(generics.ListAPIView):
+    """API view to list all active posts"""
+
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        """Return all active posts"""
         return api_models.Post.objects.filter(status="Active")
 
 
 class PostDetailAPIView(generics.RetrieveAPIView):
+    """API view to retrieve a single active post and increment its view count"""
+
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
 
     def get_object(self):
+        """Retrieve post based on slug and increment view count"""
+
         slug = self.kwargs['slug']
         post = api_models.Post.objects.get(slug=slug, status="Active")
-        post.view = post.view +1
+        post.view = post.view + 1
         post.save()
 
         return post
 
 
 class LikesPostAPIView(APIView):
+    """API view to like or dislike a post"""
+
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -101,6 +125,8 @@ class LikesPostAPIView(APIView):
         ),
     )
     def post(self, request):
+        """Like or dislike a post based on user and post IDs"""
+
         user_id = request.data['user_id']
         post_id = request.data['post_id']
         user = api_models.User.objects.get(id=user_id)
@@ -121,6 +147,8 @@ class LikesPostAPIView(APIView):
 
 
 class PostCommentAPIView(APIView):
+    """API view to add a comment to a post"""
+
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -134,6 +162,8 @@ class PostCommentAPIView(APIView):
         ),
     )
     def post(self, request):
+        """Add a comment to a post and notify the post owner"""
+
         post_id = request.data["post_id"]
         name = request.data["name"]
         email = request.data["email"]
@@ -155,6 +185,7 @@ class PostCommentAPIView(APIView):
 
 
 class BookmarkPostAPIView(APIView):
+    """API view to bookmark or remove bookmark from a post"""
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -165,6 +196,7 @@ class BookmarkPostAPIView(APIView):
         ),
     )
     def post(self, request):
+        """Bookmark or remove bookmark from a post"""
         user_id = request.data["user_id"]
         post_id = request.data["post_id"]
         user = api_models.User.objects.get(id=user_id)
@@ -190,10 +222,13 @@ class BookmarkPostAPIView(APIView):
 
 
 class DashboardStats(generics.ListAPIView):
+    """API view to get dashboard statistics for a user"""
     serializer_class = api_serializer.AuthorSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        """Calculate and return dashboard statistics"""
+
         user_id = self.kwargs['user_id']
         user = api_models.User.objects.get(id=user_id)
 
@@ -212,36 +247,50 @@ class DashboardStats(generics.ListAPIView):
         }]
 
     def list(self, *args, **kwargs):
+        """Return the serialized dashboard statistics"""
+
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
 class DashboardPostLists(generics.ListAPIView):
+    """API view to list all posts created by a user"""
+
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        """Return posts created by the user"""
+
         user_id = self.kwargs["user_id"]
         user = api_models.User.objects.get(id=user_id)
         return api_models.Post.objects.filter(user=user).order_by("-id")
 
 
 class DashboardCommentList(generics.ListAPIView):
+    """API view to list all comments made by a user"""
+
     serializer_class = api_serializer.CommentSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        """Return comments for posts created by the user"""
+
         user_id = self.kwargs["user_id"]
         user = api_models.User.objects.get(id=user_id)
         return api_models.Comment.objects.filter(post__user=user)
 
 
 class DashboardNotificationList(generics.ListAPIView):
+    """API view to list all notifications for a user"""
+
     serializer_class = api_serializer.NotificationSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        """Return unseen notifications for the user"""
+
         user_id = self.kwargs["user_id"]
         user = api_models.User.objects.get(id=user_id)
 
@@ -249,6 +298,8 @@ class DashboardNotificationList(generics.ListAPIView):
 
 
 class DashboardMarkNotificationsAsSeen(APIView):
+    """API view to mark a notification as seen"""
+
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -258,6 +309,8 @@ class DashboardMarkNotificationsAsSeen(APIView):
         ),
     )
     def post(self, request):
+        """Mark notification as seen"""
+
         notification_id = request.data["notification_id"]
         notification = api_models.Notification.objects.get(id=notification_id)
         notification.seen = True
@@ -286,11 +339,13 @@ class DashboardReplyCommentAPIView(APIView):
 
 
 class DashboardPostCreateAPIView(generics.CreateAPIView):
+    """API view to create a new post"""
+
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
+        """Create a new post"""
         user_id = request.data.get("user_id")
         title = request.data.get("title")
         image = request.data.get("image")
@@ -315,10 +370,13 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
 
 
 class DashbaordPostEditAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """API view to edit or delete a post"""
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
 
     def get_object(self):
+        """Retrieve post for editing based on its slug"""
+
         user_id = self.kwargs['user_id']
         post_id = self.kwargs['post_id']
 
@@ -328,6 +386,7 @@ class DashbaordPostEditAPIView(generics.RetrieveUpdateDestroyAPIView):
         return post
 
     def update(self, request, *args, **kwargs):
+        """Update a post"""
         post_instance = self.get_object()
         title = request.data.get("title")
         image = request.data.get("image")

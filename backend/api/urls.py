@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from api import views as api_views
 
+# views of each model to fetch from
 urlpatterns = [
     # acess token
     path("user/token/", api_views.MyTokenObtainPairView.as_view()),

@@ -7,6 +7,8 @@ import apiInstance from "../../utils/axios";
 import Moment from "../../plugin/Moment";
 
 function Detail() {
+    // fetching selected post details and displayong it to the screen 
+
     const [post, setPost] = useState([]);
     const [tags, settags] = useState([]);
     const [relatedPost, setRelatedPost] = useState([]);
@@ -14,7 +16,7 @@ function Detail() {
 
     const [createComment, setCreatComment] = useState({full_name : "", email : "",comment:""});
 
-
+    // making sure the related poss doesn't fetch unless the post is received
     useEffect(() => {
         const fetchPostAndRelatedPosts = async () => {
             // First, fetch the post
@@ -35,14 +37,16 @@ function Detail() {
     
         fetchPostAndRelatedPosts();
     }, [parm.slug]); // Dependency array on the post slug to re-fetch if it changes
-    
+    // saves the state of the comment for everytime the user types a letter
     const handleCommentChange = (event)=>{
         setCreatComment({
             ...createComment,
             [event.target.name]:event.target.value,
         });
     };
-
+    // makes sure the form doesn't reload the page
+    // and adding the comment with realtime to the page without reloading 
+    // with a toast notification in ase of sucess or error
     const handleCreateCommentSubmit = async(event)=>{
         event.preventDefault();
 
