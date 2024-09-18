@@ -1,5 +1,13 @@
 # SLYND - ALX Portfolio Project
 
+# My Coding Adventure
+
+In 2019, I started coding, and by 2024, I decided to tackle a blog app using Django and React. Why? Because why not! 😅
+
+Building SLYND was a wild ride. The most epic challenge? Debugging a feature to fetch related posts—spent 5 hours on 10 lines of code🤦‍♂️
+
+I stumbled, I searched, and I asked AI for help (thank you, tech gods!). But in the end, I had a blog app that actually works(i think). 🎉
+
 ## I. Frameworks
 
 1. Django - Backend framework for building the server-side of the application.
@@ -53,11 +61,19 @@ Loay Abassi
 Let me know if you need any adjustments :)
 
 # Screenshots
-### 1 
+
+### 1
+
 ![1](screenshots/1.png)
+
 ### 2
+
 ![2](screenshots/2.png)
+
 ### 3
+
 ![3](screenshots/3.png)
+
 ### 4
+
 ![4](screenshots/4.png)
