@@ -50,5 +50,17 @@ IV. UseState
     example :
         import React,{useState} from "react";
         const [count,setcount] = usestate(starting_value)
-        
 
+V. useEffect
+
+    it's a function that runs after every render.
+    it's used to make sure how many times a render function runs ,
+    [] means once , [element] means it should reload everytime element changes value
+
+# tricks
+
+1. spreading
+
+   '...' is a spread operator , it passes object's values and specs to a child
+   obj1 = 5;
+   obj2 =...obj1 //5

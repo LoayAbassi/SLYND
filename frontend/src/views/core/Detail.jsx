@@ -2,14 +2,18 @@ import React, { useEffect, useState } from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
 import { Link, useParams } from "react-router-dom";
+import Toast from "../../plugin/Toast";
 import apiInstance from "../../utils/axios";
-import Moment from "../../plugin/Moment"
+import Moment from "../../plugin/Moment";
 
 function Detail() {
     const [post, setPost] = useState([]);
     const [tags, settags] = useState([]);
     const [relatedPost, setRelatedPost] = useState([]);
     const parm = useParams();
+
+    const [createComment, setCreatComment] = useState({full_name : "", email : "",comment:""});
+
 
     useEffect(() => {
         const fetchPostAndRelatedPosts = async () => {
@@ -32,6 +36,44 @@ function Detail() {
         fetchPostAndRelatedPosts();
     }, [parm.slug]); // Dependency array on the post slug to re-fetch if it changes
     
+    const handleCommentChange = (event)=>{
+        setCreatComment({
+            ...createComment,
+            [event.target.name]:event.target.value,
+        });
+    };
+
+    const handleCreateCommentSubmit = async(event)=>{
+        event.preventDefault();
+
+        const data = {
+            post_id : post?.id,
+            name: createComment.full_name,
+            email: createComment.email,
+            comment: createComment.comment,
+        }
+        try {
+            const response = await apiInstance.post("post/comment-post/", data);
+            Toast("success", "Comment posted successfully");
+    
+            // Fetch the post and related posts again after successful comment posting
+            
+            const update = await apiInstance.get(`post/detail/${parm.slug}`);
+            setPost(update?.data);
+        } catch (error) {
+            Toast("error", "Failed to post comment");
+        }
+
+        setCreatComment(
+            {
+                name : "",
+                email: "",
+                comment:"",
+            }
+        );
+
+
+    };
     return (
         <>
             <Header />
@@ -81,9 +123,7 @@ function Detail() {
                                 <ul className="list-inline text-primary-hover mt-0 mt-lg-3 text-start">
                                     {tags?.map((tag, index)=>(
                                         <li className="list-inline-item" key = {index}>
-                                            <a className="text-body text-decoration-none fw-bold" href="#">
                                                 #{tag}
-                                            </a>
                                         </li>
                                     ))}
 
@@ -129,23 +169,22 @@ function Detail() {
                                         </div>
                                     </div>
                                 </section>
-
-
-
                             </div>
 
                             <hr />
                             <div>
-                                <h3>{post?.comments?.length} {post?.comments?.length===1 ? "Comment":"Comments"}</h3>
+                                <h3>{post?.comments?.length} {post?.comments?.length===1 ? "Comment":"Comments"} </h3>
+                                
                                 {post?.comments?.length > 0 ? (
-                                    post.comments.map((c, index) => (
+                                    post?.comments?.slice(0,3).map((c, index) => (
                                         <div className="my-4 d-flex bg-light p-3 mb-3 rounded" key={c.id}>
-                                            <img
+                                            {/* <img
                                                 className="avatar avatar-md rounded-circle float-start me-3"
                                                 src="https://img.freepik.com/free-photo/front-portrait-woman-with-beauty-face_186202-6146.jpg?size=626&ext=jpg&ga=GA1.1.735520172.1710979200&semt=ais"
                                                 style={{ width: "70px", height: "70px", objectFit: "cover", borderRadius: "50%" }}
                                                 alt="avatar"
-                                            />
+                                            />*/}
+                                            
                                             <div>
                                                 <div className="mb-2">
                                                     <h5 className="m-0">{c.name}</h5>
@@ -166,21 +205,21 @@ function Detail() {
                             <div className="bg-light p-3 rounded">
                                 <h3 className="fw-bold">Leave a reply</h3>
                                 <small>Your email address will not be published. Required fields are marked *</small>
-                                <form className="row g-3 mt-2">
+                                <form onSubmit={handleCreateCommentSubmit} className="row g-3 mt-2">
                                     <div className="col-md-6">
                                         <label className="form-label">Name *</label>
-                                        <input type="text" className="form-control" aria-label="First name" />
+                                        <input onChange={handleCommentChange} name = "full_name" value = {createComment.full_name} type="text" className="form-control" aria-label="First name" />
                                     </div>
                                     <div className="col-md-6">
                                         <label className="form-label">Email *</label>
-                                        <input type="email" className="form-control" />
+                                        <input onChange={handleCommentChange} type="email" name = "email" className="form-control" value = {createComment.email} />
                                     </div>
                                     <div className="col-12">
                                         <label className="form-label">Write Comment *</label>
-                                        <textarea className="form-control" rows={4} />
+                                        <textarea onChange={handleCommentChange} name = "comment" className="form-control" rows={4} value = {createComment.comment}/>
                                     </div>
                                     <div className="col-12">
-                                        <button type="submit" className="btn btn-primary">
+                                        <button type="submit" className="btn btn-primary" >
                                             Post comment <i className="fas fa-paper-plane"></i>
                                         </button>
                                     </div>
