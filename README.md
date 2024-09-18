@@ -51,3 +51,10 @@ SLYND is a blog application that allows users to:
 
 Loay Abassi
 Let me know if you need any adjustments :)
+
+# Screenshots
+
+(screenshots/1.png)
+(screenshots/2.png)
+(screenshots/3.png)
+(screenshots/4.png)
