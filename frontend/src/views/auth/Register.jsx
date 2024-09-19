@@ -1,9 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {useAuthStore} from "../../store/auth";
+import {register} from "../../utils/auth";
 
 function Register() {
+    // default data 
+    const [regData,setRegData] = useState({
+        full_name : "",
+        email : "",
+        password : "",
+        confirm_password : "",
+    });
+
+    // making user wait while he log in 
+    const [loading, setloading] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleRegChange = (event)=>{
+        setRegData({
+            ...regData,
+            [event.target.name]:event.target.value
+        });
+
+    }
+
+    const resetForm = ()=>{
+        setRegData({
+            full_name : "",
+            email : "",
+            password : "",
+            confirm_password : "",
+        });
+    }
+
+    const handleReg = async(e) =>{
+        e.preventDefault();
+        setloading(true);
+
+        const {error} = register(
+            regData.full_name,
+            regData.email,
+            regData.password,
+            regData.confirm_password
+        );
+
+        if (error){
+            alert(JSON.stringify(error));
+            resetForm();
+        }
+        else{
+            navigate("/")
+        }
+        setloading(false);
+    };
+
     return (
         <>
             <Header />
@@ -22,19 +75,20 @@ function Register() {
                                     </span>
                                 </div>
                                 {/* Form */}
-                                <form className="needs-validation" noValidate="">
+                                <form className="needs-validation" noValidate="" onSubmit={handleReg}>
                                     {/* Username */}
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">
                                             Full Name
                                         </label>
-                                        <input type="text" id="full_name" className="form-control" name="full_name" placeholder="John Doe" required="" />
+                                        <input type="text" id="full_name" className="form-control" onChange={handleRegChange} value={regData.full_name} name="full_name" placeholder="John Doe" required="" />
                                     </div>
+
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">
                                             Email Address
                                         </label>
-                                        <input type="email" id="email" className="form-control" name="email" placeholder="johndoe@gmail.com" required="" />
+                                        <input type="email" id="email" className="form-control" onChange={handleRegChange} value={regData.email} name="email" placeholder="example@domain.com" required="" />
                                     </div>
 
                                     {/* Password */}
@@ -42,19 +96,26 @@ function Register() {
                                         <label htmlFor="password" className="form-label">
                                             Password
                                         </label>
-                                        <input type="password" id="password" className="form-control" name="password" placeholder="**************" required="" />
+                                        <input type="password" id="password" className="form-control" onChange={handleRegChange} value={regData.password} name="password" placeholder="**************" required="" />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="password" className="form-label">
                                             Confirm Password
                                         </label>
-                                        <input type="password" id="password" className="form-control" name="password" placeholder="**************" required="" />
+                                        <input type="password" id="confirm_password" className="form-control" onChange={handleRegChange} value={regData.confirm_password} name="confirm_password" placeholder="**************" required="" />
                                     </div>
                                     <div>
                                         <div className="d-grid">
+                                            {loading === true ? 
+                                            (
+                                                <button disabled type="submit" className="btn btn-primary">
+                                                Processing request<i className="fas fa-spinner fa-spin"></i>
+                                                </button>)
+                                            :(
                                             <button type="submit" className="btn btn-primary">
                                                 Sign Up <i className="fas fa-user-plus"></i>
-                                            </button>
+                                            </button>)}
+                                            
                                         </div>
                                     </div>
                                 </form>
