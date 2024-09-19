@@ -14,11 +14,10 @@ function Detail() {
     const [relatedPost, setRelatedPost] = useState([]);
     const parm = useParams();
 
-    const [createComment, setCreatComment] = useState({full_name : "", email : "",comment:""});
+    const [createComment, setCreateComment] = useState({full_name : "", email : "",comment:""});
 
-    // making sure the related poss doesn't fetch unless the post is received
-    useEffect(() => {
-        const fetchPostAndRelatedPosts = async () => {
+    // fetching post and related post 
+    const fetchPostAndRelatedPosts = async () => {
             // First, fetch the post
             const response = await apiInstance.get(`post/detail/${parm.slug}`);
             setPost(response?.data);
@@ -33,13 +32,14 @@ function Detail() {
                 const responseC = await apiInstance.get(`post/category/posts/${category_slug}`);
                 setRelatedPost(responseC?.data);
             }
-        };
-    
+    };
+    // rendering the posts and after reciving we render the related 
+    useEffect(() => {
         fetchPostAndRelatedPosts();
     }, [parm.slug]); // Dependency array on the post slug to re-fetch if it changes
     // saves the state of the comment for everytime the user types a letter
     const handleCommentChange = (event)=>{
-        setCreatComment({
+        setCreateComment({
             ...createComment,
             [event.target.name]:event.target.value,
         });
@@ -49,6 +49,15 @@ function Detail() {
     // with a toast notification in ase of sucess or error
     const handleCreateCommentSubmit = async(event)=>{
         event.preventDefault();
+        // checking if form is filled before submitting 
+        if (
+            createComment.full_name.length < 5 || 
+            createComment.email.length < 5 || 
+            createComment.comment.length < 5
+        ) {
+            Toast("error", "All fields must be filled");
+            return;
+        }
 
         const data = {
             post_id : post?.id,
@@ -62,22 +71,61 @@ function Detail() {
     
             // Fetch the post and related posts again after successful comment posting
             
-            const update = await apiInstance.get(`post/detail/${parm.slug}`);
-            setPost(update?.data);
+            fetchPostAndRelatedPosts();
+            
         } catch (error) {
             Toast("error", "Failed to post comment");
         }
 
-        setCreatComment(
+        setCreateComment(
             {
-                name : "",
+                full_name : "",
                 email: "",
                 comment:"",
             }
         );
+        console.log(createComment.full_name);
+        console.log(createComment.email);
+        console.log(createComment.comment);
+
+        
 
 
     };
+
+    // handeling liking a post 
+    const handleLikePost = async() =>{
+        const data = {
+            user_id : 3,
+            post_id : post?.id,
+        };
+        try {
+            const response = await apiInstance.post("post/like-post/",data);
+            console.log(response.data);
+            Toast("success", response.data.message);
+            fetchPostAndRelatedPosts();
+        }
+        catch (error) {
+            Toast("error", "Failed to like post");
+        }
+    };
+
+    // handeling bookmarks 
+    const handleBookmarkPost = async() =>{
+        const data = {
+            user_id : 3,
+            post_id : post?.id,
+        };
+        
+        try{
+            const response = await apiInstance.post("post/bookmark-post/",data);
+            Toast("success",response.data.message)
+            console.log(response.data);
+        }
+        catch (error){
+            Toast("error", "Failed to bookmark post");
+        }
+        }
     return (
         <>
             <Header />
@@ -85,7 +133,7 @@ function Detail() {
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
-                            <h1 className="text-center">{post.title}</h1>
+                            <h1 className="text-center">{post.title} </h1>
                         </div>
                     </div>
                 </div>
@@ -132,6 +180,18 @@ function Detail() {
                                     ))}
 
                                 </ul>
+                                <div className="interactions d-flex">
+                                    <button className="me-3" onClick={handleLikePost}>
+                                        <b className="bi bi-heart-fill">
+                                            {post?.likes?.length>0? ` ${post?.likes?.length}`: ""}
+                                        </b>
+                                    </button>
+                                    <button onClick={handleBookmarkPost}>
+                                        <i className="fas fa-bookmark"></i>
+                                    </button>
+                                </div>
+
+                                
                             </div>
                         </div>
                         {/* Left sidebar END */}
