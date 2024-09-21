@@ -131,6 +131,8 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    
 
     def save(self, *args, **kwargs):
         """Override save method to generate slug from title and add a short UUID."""
@@ -146,6 +148,9 @@ class Post(models.Model):
 
     def comments(self):
         return Comment.objects.filter(post=self)
+    
+    def bookmark_count(self):
+        return Bookmark.objects.filter(post=self).count()
 
 
 class Comment(models.Model):

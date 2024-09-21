@@ -5,16 +5,20 @@ import { Link, useParams } from "react-router-dom";
 import Toast from "../../plugin/Toast";
 import apiInstance from "../../utils/axios";
 import Moment from "../../plugin/Moment";
+import useUserData from "../../plugin/useUserData";
+
 
 function Detail() {
     // fetching selected post details and displayong it to the screen 
-
     const [post, setPost] = useState([]);
     const [tags, settags] = useState([]);
     const [relatedPost, setRelatedPost] = useState([]);
     const parm = useParams();
+    const user_id = useUserData()?.user_id;
 
     const [createComment, setCreateComment] = useState({full_name : "", email : "",comment:""});
+
+
 
     // fetching post and related post 
     const fetchPostAndRelatedPosts = async () => {
@@ -92,39 +96,62 @@ function Detail() {
 
 
     };
+    // comments pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [commentsPerPage] = useState(2);
+    const indexOfLastComment = currentPage * commentsPerPage;
+    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+    const currentComments = post?.comments?.slice(indexOfFirstComment, indexOfLastComment);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
     // handeling liking a post 
     const handleLikePost = async() =>{
-        const data = {
-            user_id : 3,
-            post_id : post?.id,
-        };
-        try {
-            const response = await apiInstance.post("post/like-post/",data);
-            console.log(response.data);
-            Toast("success", response.data.message);
-            fetchPostAndRelatedPosts();
+        if (user_id!== undefined){
+            const data = {
+                user_id : user_id,
+                post_id : post?.id,
+            };
+            console.log(user_id);
+            try {
+                const response = await apiInstance.post("post/like-post/",data);
+                console.log(response.data);
+                Toast("success", response.data.message);
+                fetchPostAndRelatedPosts();
+            }
+            catch (error) {
+                Toast("error", "Failed to like post");
+            }
         }
-        catch (error) {
-            Toast("error", "Failed to like post");
+        else{
+            Toast("error", "only registered users can like");
         }
+
     };
 
     // handeling bookmarks 
     const handleBookmarkPost = async() =>{
-        const data = {
-            user_id : 3,
-            post_id : post?.id,
-        };
-        
-        try{
-            const response = await apiInstance.post("post/bookmark-post/",data);
-            Toast("success",response.data.message)
-            console.log(response.data);
+        if (user_id!== undefined){
+            const data = {
+                user_id : user_id,
+                post_id : post?.id,
+            };
+            
+            
+            try{
+                const response = await apiInstance.post("post/bookmark-post/",data);
+                Toast("success",response.data.message)
+                console.log(response.data);
+                fetchPostAndRelatedPosts();
+            }
+            catch (error){
+                Toast("error", "Failed to bookmark post");
+            }
         }
-        catch (error){
-            Toast("error", "Failed to bookmark post");
+        else{
+            Toast("error", "only registered users can bookmark");
         }
+
         }
     return (
         <>
@@ -187,7 +214,10 @@ function Detail() {
                                         </b>
                                     </button>
                                     <button onClick={handleBookmarkPost}>
-                                        <i className="fas fa-bookmark"></i>
+                                        <b className="bi bi-bookmark-fill">
+                                            {post?.bookmark_count>0? ` ${post?.bookmark_count}`: ""}
+
+                                        </b>
                                     </button>
                                 </div>
 
@@ -237,24 +267,39 @@ function Detail() {
 
                             <hr />
                             <div>
-                                <h3>{post?.comments?.length} {post?.comments?.length===1 ? "Comment":"Comments"} </h3>
-                                
                                 {post?.comments?.length > 0 ? (
-                                    post?.comments?.slice(0,3).map((c, index) => (
-                                        <div className="my-4 d-flex bg-light p-3 mb-3 rounded" key={c.id}>
-                                            {/* <img
+                                    currentComments.map((c, index) => (
+                                        <div className="my-4 d-flex bg-light p-3 mb-3 rounded" key={index}>
+                                            <img
                                                 className="avatar avatar-md rounded-circle float-start me-3"
-                                                src="https://img.freepik.com/free-photo/front-portrait-woman-with-beauty-face_186202-6146.jpg?size=626&ext=jpg&ga=GA1.1.735520172.1710979200&semt=ais"
+                                                src="../default.png"
                                                 style={{ width: "70px", height: "70px", objectFit: "cover", borderRadius: "50%" }}
                                                 alt="avatar"
-                                            />*/}
-                                            
+                                            />
                                             <div>
                                                 <div className="mb-2">
                                                     <h5 className="m-0">{c.name}</h5>
                                                     <span className="me-3 small">{new Date(c.date).toLocaleDateString()}</span>
                                                 </div>
                                                 <p className="fw-bold">{c.comment}</p>
+                                                {c.reply && (
+                                                    <div className="mt-3 p-3 bg-white rounded shadow-sm">
+                                                        <div className="d-flex">
+                                                            {/* Post owner's avatar */}
+                                                            <img
+                                                                className="avatar avatar-sm rounded-circle me-2"
+                                                                src={post?.profile?.image || "../default_owner.png"} // Post owner's image or default
+                                                                style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "50%" }}
+                                                                alt="Owner avatar"
+                                                            />
+                                                            <div>
+                                                                <h6 className="m-0">{post?.profile?.full_name}</h6>
+                                                                <p className="m-0 small text-muted">Author's reply</p>
+                                                                <p>{c.reply}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     ))
@@ -262,7 +307,31 @@ function Detail() {
                                     <p>No comments yet.</p>
                                 )}
 
+                                <ul className="pagination">
+                                    {Math.ceil(post?.comments?.length / commentsPerPage) > 1 && (
+                                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                            <button onClick={() => paginate(currentPage - 1)} className="page-link" disabled={currentPage === 1}>
+                                                <i className="bi bi-arrow-left"></i> 
+                                            </button>
+                                        </li>
+                                    )}
 
+                                    {Array.from({ length: Math.ceil(post?.comments?.length / commentsPerPage) }, (_, i) => (
+                                        <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
+                                            <button onClick={() => paginate(i + 1)} className="page-link">
+                                                {i + 1}
+                                            </button>
+                                        </li>
+                                    ))}
+
+                                    {Math.ceil(post?.comments?.length / commentsPerPage) > 1 && (
+                                        <li className={`page-item ${currentPage === Math.ceil(post?.comments?.length / commentsPerPage) ? 'disabled' : ''}`}>
+                                            <button onClick={() => paginate(currentPage + 1)} className="page-link" disabled={currentPage === Math.ceil(post?.comments?.length / commentsPerPage)}>
+                                                <i className="bi bi-arrow-right"></i>
+                                            </button>
+                                        </li>
+                                    )}
+                                </ul>
                             </div>
                             {/* Comments END */}
                             {/* Reply START */}

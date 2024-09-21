@@ -105,6 +105,7 @@ class PostSerializer(serializers.ModelSerializer):
         model = api_models.Post
 
     comments = CommentSerializer(many=True)
+    bookmark_count = serializers.SerializerMethodField()
 
     def __init__(self, *args, **kwargs):
         """Adjust serialization depth based on the request method."""
@@ -115,6 +116,10 @@ class PostSerializer(serializers.ModelSerializer):
             self.Meta.depth = 0
         else:
             self.Meta.depth = 1
+
+    def get_bookmark_count(self, obj):
+        """Get the bookmark count for a post."""
+        return obj.bookmark_count()
 
 
 class BookmarkSerializer(serializers.ModelSerializer):

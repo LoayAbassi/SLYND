@@ -93,7 +93,7 @@ function Index() {
                                 <div className="card-body px-3 pt-3">
                                     <h4 className="card-title">
                                         <Link to={post.slug} className="btn-link text-reset stretched-link fw-bold text-decoration-none">
-                                            {post.title}
+                                            {post.title.slice(0,40)}
                                         </Link>
                                     </h4>
                                     <button style={{ border: "none", background: "none" }}>
@@ -232,7 +232,7 @@ function Index() {
                                 <div className="card-body px-3 pt-3">
                                     <h4 className="card-title">
                                         <Link to={postD.slug} className="btn-link text-reset stretched-link fw-bold text-decoration-none">
-                                            {postD.title}
+                                            {postD.title.slice(0,40)}
                                         </Link>
                                     </h4>
                                     <button style={{ border: "none", background: "none" }}>
