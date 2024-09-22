@@ -158,20 +158,26 @@ function Index() {
                     <div className="container">
                         <div className="row">
                             {categoryItems.map((category) => (
-                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={category.id}>
-                                    <div className="card bg-transparent">
-                                        <img 
-                                            className="card-img" 
-                                            src={category.image} 
-                                            style={{ width: "100%", height: "160px", objectFit: "cover" }} 
-                                            alt="card image" 
-                                        />
-                                        <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                                            <h5 className="mb-0">{category.title}</h5>
-                                            <small>{category.post_count == 1 ? "1 Post" : `${category.post_count} Posts`}</small>
+                                
+                                    <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={category.id}>
+                                        <div className="card bg-transparent">
+                                            <img 
+                                                className="card-img" 
+                                                src={category.image} 
+                                                style={{ width: "100%", height: "160px", objectFit: "cover" }} 
+                                                alt="card image" 
+                                            />
+                                            <div className="d-flex flex-column align-items-center mt-3 pb-2">
+                                                <Link to = {`category/${category.slug}`} className="cattitle1" >
+
+                                                <h5 className="mb-0">{category.title}</h5>                                        
+                                                </Link>
+                                                <small>{category.post_count == 1 ? "1 Post" : `${category.post_count} Posts`}</small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                
+
                             ))}
                         </div>
                     </div>
