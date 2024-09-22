@@ -19,17 +19,6 @@ function Header() {
                     <div className="collapse navbar-collapse" id="navbarCollapse">
                         
                         <ul className="navbar-nav navbar-nav-scroll ms-auto">
-                            <li className="nav-item dropdown">
-                                <Link className="nav-link active" to="/">
-                                    Home
-                                </Link>
-                            </li>
-                            <li className="nav-item dropdown">
-                                <Link className="nav-link active" to="/category/">
-                                    Category
-                                </Link>
-                            </li>
-                            
                                 {isLoggedIn()?(
                                     <>
                                         <li className="nav-item dropdown">

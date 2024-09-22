@@ -61,9 +61,9 @@ function Category() {
                                     </div>
                                     <div className="card-body px-3 pt-3">
                                         <h4 className="card-title">
-                                            <a href="post-single.html" className="btn-link text-reset stretched-link fw-bold text-decoration-none">
-                                                {post?.title}
-                                            </a>
+                                        <Link to={`/${post.slug}`} className="btn-link text-reset stretched-link fw-bold text-decoration-none">
+                                            {post.title.slice(0,40)}
+                                        </Link>
                                         </h4>
                                         <ul className="mt-3 list-style-none" style={{ listStyle: "none" }}>
                                             <li>

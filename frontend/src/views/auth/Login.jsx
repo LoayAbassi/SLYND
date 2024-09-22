@@ -78,12 +78,7 @@ function Login() {
                                         <input type="password" onChange={handlelogStateChange} value={logState.password} id="password" className="form-control" name="password" placeholder="**************" required="" />
                                         <div className="invalid-feedback">Please enter valid password.</div>
                                     </div>
-                                    {/* Checkbox */}
-                                    <div className="d-lg-flex justify-content-between align-items-center mb-4">
-                                        <div>
-                                            <Link to="/forgot-password/">Forgot your password?</Link>
-                                        </div>
-                                    </div>
+
                                     <div>
                                         <div className="d-grid">
                                             <button className="btn btn-primary w-100" type="submit" disabled={isLoading}>
