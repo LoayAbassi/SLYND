@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import useUserData from "../../plugin/useUserData";
 import apiInstance from "../../utils/axios";
 import Moment from "../../plugin/Moment";
+import Toast from "../../plugin/Toast";
+
 import moment from "moment";
 function Posts() {
     const [original,setOriginal] = useState([]);
@@ -25,6 +27,15 @@ function Posts() {
         }
     }
 
+    const deletePost = async(post_id)=>{
+        try {
+            const delete_response = await apiInstance.delete(`author/dashboard/post_detail/${user_id}/${post_id}/`);
+            Toast("success", "Post deleted successfully");
+            fetchPost();
+        } catch (error) {
+            Toast("error","Try again later");
+        }
+    };
     // handeling the searching of postsby title
     const handleSearch = (event) =>{
         const search = event.target.value.toLowerCase();
@@ -83,9 +94,9 @@ function Posts() {
                                         <h5 className="mb-2 mb-sm-0">
                                             All Blog Posts <span className="badge bg-primary bg-opacity-10 text-primary">{posts.length}</span>
                                         </h5>
-                                        <a href="#" className="btn btn-sm btn-primary mb-0">
+                                        <Link to="/add-post/" className="btn btn-sm btn-primary mb-0">
                                             Add New <i className="fas fa-plus"></i>
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                                 <div className="card-body">
@@ -113,8 +124,6 @@ function Posts() {
                                             </form>
                                         </div>
                                     </div>
-                                    {/* Search and select END */}
-                                    {/* Blog list table START */}
                                     <div className="table-responsive border-0">
                                         <table className="table align-middle p-4 mb-0 table-hover table-shrink">
                                             {/* Table head */}
@@ -169,12 +178,12 @@ function Posts() {
                                                         </td>
                                                         <td>
                                                             <div className="d-flex gap-2">
-                                                                <a href="#" className="btn-round mb-0 btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                                                <button className="btn-round mb-0 btn btn-danger" onClick={()=> deletePost(post?.id)} data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
                                                                     <i className="bi bi-trash" />
-                                                                </a>
-                                                                <a href="dashboard-post-edit.html" className="btn btn-primary btn-round mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                                                </button>
+                                                                <Link to={`/edit-post/${post?.id}`} className="btn btn-primary btn-round mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                                                     <i className="bi bi-pencil-square" />
-                                                                </a>
+                                                                </Link>
                                                             </div>
                                                         </td>
                                                     </tr>

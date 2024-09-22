@@ -33,7 +33,7 @@ function Login() {
 
         const { error } = await login(logState.email, logState.password);
         if (error) {
-            Toast("error",JSON.stringify(error));
+            Toast("error","verify email or password");
             resetForm();
         } else {
             navigate("/");

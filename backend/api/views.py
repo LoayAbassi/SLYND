@@ -353,11 +353,13 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
         tags = request.data.get("tags")
         category_id = request.data.get("category_id")
         post_status = request.data.get("post_status")
+        print("User ID:", user_id)
+        print("Category ID:", category_id)
 
         user = api_models.User.objects.get(id=user_id)
         category = api_models.Category.objects.get(id=category_id)
 
-        api_models.Post.create(
+        post_instance = api_models.Post(
             user=user,
             title=title,
             image=image,
@@ -366,6 +368,7 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
             category=category,
             status=post_status,
         )
+        post_instance.save()
         return Response({"message": "post created"}, status=status.HTTP_201_CREATED)
 
 
@@ -401,6 +404,7 @@ class DashbaordPostEditAPIView(generics.RetrieveUpdateDestroyAPIView):
 
         post_instance.description = description
         post_instance.tags = tags
+        print(f"Category ID: {category_id}")
         post_instance.category = category
         post_instance.status = post_status
         post_instance.save()

@@ -335,29 +335,37 @@ function Detail() {
                             </div>
                             {/* Comments END */}
                             {/* Reply START */}
-                            <div className="bg-light p-3 rounded">
-                                <h3 className="fw-bold">Leave a reply</h3>
-                                <small>Your email address will not be published. Required fields are marked *</small>
-                                <form onSubmit={handleCreateCommentSubmit} className="row g-3 mt-2">
-                                    <div className="col-md-6">
-                                        <label className="form-label">Name *</label>
-                                        <input onChange={handleCommentChange} name = "full_name" value = {createComment.full_name} type="text" className="form-control" aria-label="First name" />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label className="form-label">Email *</label>
-                                        <input onChange={handleCommentChange} type="email" name = "email" className="form-control" value = {createComment.email} />
-                                    </div>
-                                    <div className="col-12">
-                                        <label className="form-label">Write Comment *</label>
-                                        <textarea onChange={handleCommentChange} name = "comment" className="form-control" rows={4} value = {createComment.comment}/>
-                                    </div>
-                                    <div className="col-12">
-                                        <button type="submit" className="btn btn-primary" >
-                                            Post comment <i className="fas fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                            {user_id !== undefined?
+                            (
+                                <div className="bg-light p-3 rounded">
+                                    <h3 className="fw-bold">Leave a reply</h3>
+                                    <small>Your email address will not be published. Required fields are marked *</small>
+                                    <form onSubmit={handleCreateCommentSubmit} className="row g-3 mt-2">
+                                        <div className="col-md-6">
+                                            <label className="form-label">Name *</label>
+                                            <input onChange={handleCommentChange} name = "full_name" value = {createComment.full_name} type="text" className="form-control" aria-label="First name" />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label">Email *</label>
+                                            <input onChange={handleCommentChange} type="email" name = "email" className="form-control" value = {createComment.email} />
+                                        </div>
+                                        <div className="col-12">
+                                            <label className="form-label">Write Comment *</label>
+                                            <textarea onChange={handleCommentChange} name = "comment" className="form-control" rows={4} value = {createComment.comment}/>
+                                        </div>
+                                        <div className="col-12">
+                                            <button type="submit" className="btn btn-primary" >
+                                                Post comment <i className="fas fa-paper-plane"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            ) : (
+                               <h1>
+                                please log in to leave a comment
+                               </h1>
+                            )}
+                            
                         </div>
                     </div>
                 </div>

@@ -1,9 +1,86 @@
-import React from "react";
+import React, { useState,useEffect } from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
 import { Link } from "react-router-dom";
+import Toast from "../../plugin/Toast";
+import useUserData from "../../plugin/useUserData";
+import apiInstance from "../../utils/axios";
+import Moment from "../../plugin/Moment";
+import moment from "moment";
 
 function Profile() {
+    const user_id = useUserData()?.user_id;
+
+    const [profile,setProfile] = useState({
+        image : "",
+        full_name : "",
+        about : "",
+        bio : "",
+        country : "",
+    });
+
+    const [imagePreview,setImagePreview] = useState([""]);
+
+
+    const fetchProfile = async()=>{
+        try {
+            const profile_response = await apiInstance.get(`user/profile/${user_id}`);
+            setProfile(profile_response?.data);
+        } catch (error) {
+            Toast("error", "error connecting to the server");
+        }
+
+    };
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+    
+    const imageChangeHandle = (event) =>{
+        const imageFile = event.target.files[0];
+        setProfile({
+            ...profile,
+            [event.target.name]: imageFile,
+        });
+
+        const display = new FileReader();
+        display.onload = () => {
+            setImagePreview(display.result);
+        }
+        if(imageFile){
+            display.readAsDataURL(imageFile);
+        }
+    };
+
+    const handleProfileChange = (event)=>{
+        setProfile({
+            ...profile,
+            [event.target.name] :event.target.value,
+        })
+    }
+    
+    const handleFormSubmit = async(e) => {
+        e.preventDefault();
+        const profile_response = await apiInstance.get(`user/profile/${user_id}`);
+        const data = new FormData();
+        if (profile.image !== profile_response.data.image){
+            data.append('image', profile.image);
+        }
+        data.append('full_name', profile.full_name);
+        data.append('about', profile.about);
+        data.append('bio', profile.bio);
+        data.append('country', profile.country);
+
+        try {
+            const profile_change = await apiInstance.patch(`user/profile/${user_id}/`,data, {headers: {
+                'Content-Type': 'multipart/form-data',
+            }});
+            Toast("success", "Profile updated");
+        } catch (error) {
+            Toast("error", "try again later")
+        }
+    };
+
     return (
         <>
             <Header />
@@ -16,14 +93,13 @@ function Profile() {
                                     <h3 className="mb-0">Profile Details</h3>
                                     <p className="mb-0">You have full control to manage your own account setting.</p>
                                 </div>
-                                <form className="card-body">
+                                <form className="card-body" onSubmit={(e)=> handleFormSubmit(e)}>
                                     <div className="d-lg-flex align-items-center justify-content-between">
                                         <div className="d-flex align-items-center mb-4 mb-lg-0">
-                                            <img src="https://eduport.webestica.com/assets/images/avatar/09.jpg" id="img-uploaded" className="avatar-xl rounded-circle" alt="avatar" style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover" }} />
+                                            <img src={imagePreview!=""? imagePreview :profile?.image } id="img-uploaded" className="avatar-xl rounded-circle" alt="avatar" style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover" }} />
                                             <div className="ms-3">
                                                 <h4 className="mb-0">Your avatar</h4>
-                                                <p className="mb-0">PNG or JPG no bigger than 800px wide and tall.</p>
-                                                <input type="file" className="form-control mt-3" name="" id="" />
+                                                <input type="file" className="form-control mt-3" name="image" onChange={imageChangeHandle} id="" />
                                             </div>
                                         </div>
                                     </div>
@@ -38,21 +114,21 @@ function Profile() {
                                                 <label className="form-label" htmlFor="fname">
                                                     Full Name
                                                 </label>
-                                                <input type="text" id="fname" className="form-control" placeholder="What's your full name?" required="" />
+                                                <input type="text" id="fname" onChange={handleProfileChange} name = "full_name" className="form-control" placeholder="What's your full name?" value = {profile?.full_name || ""} required="" />
                                                 <div className="invalid-feedback">Please enter first name.</div>
                                             </div>
                                             <div className="mb-3 col-12 col-md-12">
                                                 <label className="form-label" htmlFor="fname">
                                                     Bio
                                                 </label>
-                                                <input type="text" id="fname" className="form-control" placeholder="Write a catchy bio!" required="" />
+                                                <input type="text" onChange={handleProfileChange} name = "bio" id="fname" className="form-control" placeholder="Write a catchy bio!" value = {profile?.bio || ""} required="" />
                                                 <div className="invalid-feedback">Please enter first name.</div>
                                             </div>
                                             <div className="mb-3 col-12 col-md-12">
                                                 <label className="form-label" htmlFor="lname">
                                                     About Me
                                                 </label>
-                                                <textarea placeholder="Tell us about yourself..." name="" id="" cols="30" rows="5" className="form-control"></textarea>
+                                                <textarea onChange={handleProfileChange} name = "about"  placeholder="Tell us about yourself..."  id="" cols="30" rows="5" value = {profile?.about || ""} className="form-control"></textarea>
                                                 <div className="invalid-feedback">Please enter last name.</div>
                                             </div>
 
@@ -60,7 +136,7 @@ function Profile() {
                                                 <label className="form-label" htmlFor="editCountry">
                                                     Country
                                                 </label>
-                                                <input type="text" id="country" className="form-control" placeholder="What country are you from?" required="" />
+                                                <input value = {profile?.country || ""} onChange={handleProfileChange} name = "country" type="text" id="country" className="form-control" placeholder="What country are you from?" required="" />
                                                 <div className="invalid-feedback">Please choose country.</div>
                                             </div>
                                             <div className="col-12 mt-4">

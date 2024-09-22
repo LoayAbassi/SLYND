@@ -110,7 +110,7 @@ function Dashboard() {
                                     <h5 className="card-header-title mb-0">Latest Posts</h5>
                                     <div className="dropdown text-end">
                                         <a href="#" className="btn border-0 p-0 mb-0" role="button" id="dropdownShare3" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i className="bi bi-grid-fill text-danger fa-fw" />
+                                        {posts?.length} <i className="bi bi-grid-fill text-danger fa-fw" />
                                         </a>
                                     </div>
                                 </div>
@@ -153,43 +153,43 @@ function Dashboard() {
                                 <div className="card-header border-bottom d-flex justify-content-between align-items-center  p-3">
                                     <h5 className="card-header-title mb-0">Recent Comments</h5>
                                     <div className="dropdown text-end">
-                                        <a href="#" className="btn border-0 p-0 mb-0" role="button" id="dropdownShare3" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i className="bi bi-chat-left-quote-fill text-success fa-fw" />
-                                        </a>
+                                        <b className="btn border-0 p-0 mb-0" role="button" id="dropdownShare3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            {comments?.length} <i className="bi bi-chat-left-quote-fill text-success fa-fw" />
+                                        </b>
                                     </div>
                                 </div>
                                
                                     <div className="card-body p-3">
                                         <div className="row">
-                                        {comments?.slice(0,3)?.map((comment,index)=>(
+                                            {comments?.slice(0,3)?.map((comment,index)=>(
 
-                                            <div key = {index}>
+                                                <div key = {index}>
 
-                                            
-                                                <div className="col-12">
-                                                    <div className="d-flex align-items-center position-relative">
-                                                        <div className="avatar avatar-lg flex-shrink-0">
-                                                            <img className="avatar-img" src="../default.png" style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "50%" }} alt="avatar" />
-                                                        </div>
-                                                        <div className="ms-3">
-                                                            <p className="mb-1">
-                                                                {" "}
-                                                                <a className="h6 stretched-link text-decoration-none text-dark" href="#">
+                                                
+                                                    <div className="col-12">
+                                                        <div className="d-flex align-items-center position-relative">
+                                                            <div className="avatar avatar-lg flex-shrink-0">
+                                                                <img className="avatar-img" src="../default.png" style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "50%" }} alt="avatar" />
+                                                            </div>
+                                                            <div className="ms-3">
+                                                                <p className="mb-1">
                                                                     {" "}
-                                                                    {comment.comment}{" "}
-                                                                </a>
-                                                            </p>
-                                                            <div className="d-flex justify-content-between">
-                                                                <p className="small mb-0">
-                                                                    <i>by</i> {comment.name}
+                                                                    <a className="h6 stretched-link text-decoration-none text-dark" href="#">
+                                                                        {" "}
+                                                                        {comment.comment}{" "}
+                                                                    </a>
                                                                 </p>
+                                                                <div className="d-flex justify-content-between">
+                                                                    <p className="small mb-0">
+                                                                        <i>by</i> {comment.name}
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                <hr className="my-3" />
-                                            </div>
+                                                    <hr className="my-3" />
+                                                </div>
                                             ))}
                                         
                                         </div>
@@ -206,11 +206,12 @@ function Dashboard() {
                         <div className="col-md-6 col-xxl-4">
                             <div className="card border h-100">
                                 <div className="card-header border-bottom d-flex justify-content-between align-items-center  p-3">
-                                    <h5 className="card-header-title mb-0">Notifications</h5>
+                                    <h5 className="card-header-title mb-0">Notifications  </h5>
                                     <div className="dropdown text-end">
-                                        <a href="#" className="btn border-0 p-0 mb-0" role="button" id="dropdownShare3" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i className="fas fa-bell text-warning fa-fw" />
-                                        </a>
+                                        <b className="btn border-0 p-0 mb-0" role="button" id="dropdownShare3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            {notifications?.length} <i className="fas fa-bell text-warning fa-fw" />
+                                        </b>
+                                        
                                     </div>
                                 </div>
                                 <div className="card-body p-3">
@@ -261,113 +262,7 @@ function Dashboard() {
                             </div>
                         </div>
 
-                        <div className="col-12">
-                            <div className="card border bg-transparent rounded-3">
-                                <div className="card-header bg-transparent border-bottom p-3">
-                                    <div className="d-sm-flex justify-content-between align-items-center">
-                                        <h5 className="mb-2 mb-sm-0">
-                                            All Blog Posts <span className="badge bg-primary bg-opacity-10 text-primary">{stats.posts}</span>
-                                        </h5>
-                                        <a href="#" className="btn btn-sm btn-primary mb-0">
-                                            Add New <i className="fas fa-plus"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div className="card-body">
-                                    <div className="row g-3 align-items-center justify-content-between mb-3">
-                                        <div className="col-md-8">
-                                            <form className="rounded position-relative">
-                                                <input className="form-control pe-5 bg-transparent" type="search" placeholder="Search Articles" aria-label="Search" />
-                                                <button className="btn bg-transparent border-0 px-2 py-0 position-absolute top-50 end-0 translate-middle-y" type="submit">
-                                                    <i className="fas fa-search fs-6 " />
-                                                </button>
-                                            </form>
-                                        </div>
-                                        <div className="col-md-3">
-                                            <form>
-                                                <select className="form-select z-index-9 bg-transparent" aria-label=".form-select-sm">
-                                                    <option value="">Sort by</option>
-                                                    <option>Newest</option>
-                                                    <option>Oldest</option>
-                                                    <option>------</option>
-                                                    <option>Active</option>
-                                                    <option>Draft</option>
-                                                    <option>Disabled</option>
-                                                </select>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    {/* Search and select END */}
-                                    {/* Blog list table START */}
-                                    <div className="table-responsive border-0">
-                                        <table className="table align-middle p-4 mb-0 table-hover table-shrink">
-                                            {/* Table head */}
-                                            <thead className="table-dark">
-                                                <tr>
-                                                    <th scope="col" className="border-0 rounded-start">
-                                                        Article Name
-                                                    </th>
-                                                    <th scope="col" className="border-0">
-                                                        Views
-                                                    </th>
-                                                    <th scope="col" className="border-0">
-                                                        Published Date
-                                                    </th>
-                                                    <th scope="col" className="border-0">
-                                                        Category
-                                                    </th>
-                                                    <th scope="col" className="border-0">
-                                                        Status
-                                                    </th>
-                                                    <th scope="col" className="border-0 rounded-end">
-                                                        Action
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="border-top-0">
-                                                {posts?.slice(0,6)?.map((post, index) => (
-                                                    <tr key = {index}>
-                                                        <td>
-                                                            <h6 className="mt-2 mt-md-0 mb-0 ">
-                                                                <a href="#" className="text-dark text-decoration-none">
-                                                                    {post?.title}
-                                                                </a>
-                                                            </h6>
-                                                        </td>
-                                                        <td>
-                                                            <h6 className="mb-0">
-                                                                <a href="#" className="text-dark text-decoration-none">
-                                                                    {post.view}
-                                                                </a>
-                                                            </h6>
-                                                        </td>
-                                                        <td>{Moment(post?.date)}</td>
-                                                        <td>{post?.category?.title}</td>
-                                                        <td>
-                                                            <span className="badge bg-success bg-opacity-10 text-success mb-2">{post?.status}</span>
-                                                        </td>
-                                                        <td>
-                                                            <div className="d-flex gap-2">
-                                                                <a href="#" className="btn-round mb-0 btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
-                                                                    <i className="bi bi-trash" />
-                                                                </a>
-                                                                <a href="dashboard-post-edit.html" className="btn btn-primary btn-round mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                                                    <i className="bi bi-pencil-square" />
-                                                                </a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
 
-                                                    
-                                                ))}
-                                                
-                                            
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
